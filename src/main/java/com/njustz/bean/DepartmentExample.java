@@ -7,17 +7,13 @@ public class DepartmentExample {
 
     protected String orderByClause;
 
-
     protected boolean distinct;
 
-
     protected List<Criteria> oredCriteria;
-
 
     public DepartmentExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
-
 
     public void setOrderByClause(String orderByClause) {
         this.orderByClause = orderByClause;
@@ -43,7 +39,6 @@ public class DepartmentExample {
         oredCriteria.add(criteria);
     }
 
-
     public Criteria or() {
         Criteria criteria = createCriteriaInternal();
         oredCriteria.add(criteria);
@@ -63,13 +58,11 @@ public class DepartmentExample {
         return criteria;
     }
 
-
     public void clear() {
         oredCriteria.clear();
         orderByClause = null;
         distinct = false;
     }
-
 
     protected abstract static class GeneratedCriteria {
         protected List<Criterion> criteria;
@@ -243,14 +236,12 @@ public class DepartmentExample {
         }
     }
 
-
     public static class Criteria extends GeneratedCriteria {
 
         protected Criteria() {
             super();
         }
     }
-
 
     public static class Criterion {
         private String condition;

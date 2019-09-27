@@ -39,6 +39,12 @@
     <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.njustz.dao"></property>
     </bean>
+
+    <!--配置一个sqlSession批量执行-->
+    <bean class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+        <constructor-arg name="executorType" value="BATCH"></constructor-arg>
+    </bean>
     <!--=======================================================================================-->
 
     <!--配置Spring框架声明式事务管理-->

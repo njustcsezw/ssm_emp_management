@@ -7,7 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 
-public interface DepartmentMapper {
+public interface
+DepartmentMapper {
 
     long countByExample(DepartmentExample example);
 

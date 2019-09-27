@@ -7,12 +7,9 @@ public class EmployeeExample {
 
     protected String orderByClause;
 
-
     protected boolean distinct;
 
-
     protected List<Criteria> oredCriteria;
-
 
     public EmployeeExample() {
         oredCriteria = new ArrayList<Criteria>();
@@ -22,16 +19,13 @@ public class EmployeeExample {
         this.orderByClause = orderByClause;
     }
 
-
     public String getOrderByClause() {
         return orderByClause;
     }
 
-
     public void setDistinct(boolean distinct) {
         this.distinct = distinct;
     }
-
 
     public boolean isDistinct() {
         return distinct;
@@ -40,7 +34,6 @@ public class EmployeeExample {
     public List<Criteria> getOredCriteria() {
         return oredCriteria;
     }
-
 
     public void or(Criteria criteria) {
         oredCriteria.add(criteria);
@@ -51,7 +44,6 @@ public class EmployeeExample {
         oredCriteria.add(criteria);
         return criteria;
     }
-
 
     public Criteria createCriteria() {
         Criteria criteria = createCriteriaInternal();
