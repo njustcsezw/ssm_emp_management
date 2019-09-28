@@ -36,7 +36,6 @@ public class EmployeeController {
         //使用pageInfo包装查询后的结果，只需要将pageInfo交给页面就行
         //封装了详细的分页信息，包括我们查询出来的结果，传入连续显示的页数
         PageInfo pageInfo = new PageInfo(employeeList, 5);
-
         model.addAttribute("pageInfo", pageInfo);
 
         return "list";

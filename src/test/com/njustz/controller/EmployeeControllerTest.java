@@ -25,7 +25,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath: applicationContext.xml", "classpath: springmvc.xml"})
+@ContextConfiguration(locations = {"classpath:applicationContext.xml", "classpath:springmvc.xml"})
 public class EmployeeControllerTest {
 
     @Autowired
@@ -42,7 +42,7 @@ public class EmployeeControllerTest {
     @Test
     public void testPage() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.
-                get("/emps").param("pn", "1")).andReturn();
+                get("/emps").param("pn", "5")).andReturn();
 
         MockHttpServletRequest request = result.getRequest();
         PageInfo pageInfo = (PageInfo) request.getAttribute("pageInfo");
