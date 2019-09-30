@@ -5,23 +5,24 @@ import java.util.Map;
 
 
 public class Msg {
-	//
+
+	//状态码 success100, fail-100;
 	private int code;
-	//
+	//提示信息
 	private String msg;
-	//
+	//用户要返回浏览器的数据
 	private Map<String,Object> extend =new HashMap<String ,Object>();
 	
 	public static Msg success() {
 		Msg result=new Msg();
 		result.setCode(100);
-		result.setMsg("");
+		result.setMsg("success");
 		return result;
 	}
 	public static Msg fail() {   //
 		Msg result=new Msg();
 		result.setCode(-100);
-		result.setMsg("");
+		result.setMsg("fail");
 		return result;
 	}
 	
@@ -30,8 +31,7 @@ public class Msg {
 		return this;
 		
 	}
-	
-	
+
 	public int getCode() {
 		return code;
 	}
@@ -50,8 +50,5 @@ public class Msg {
 	public void setExtend(Map<String, Object> extend) {
 		this.extend = extend;
 	}
-	
-	
-	
 	
 }

@@ -3,12 +3,14 @@ package com.njustz.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.njustz.bean.Employee;
+import com.njustz.bean.Msg;
 import com.njustz.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -39,6 +41,20 @@ public class EmployeeController {
         model.addAttribute("pageInfo", pageInfo);
 
         return "list";
+    }
+
+    @RequestMapping("/emp_lists")
+    @ResponseBody
+    public Msg getEmpsWithJson(@RequestParam(value = "pn", defaultValue = "1") Integer pn){
+
+        PageHelper.startPage(pn, 10);
+        //startPage后面紧跟的查询就是一个分页查询
+        List<Employee> employeeList = employeeService.getAll();
+        //使用pageInfo包装查询后的结果，只需要将pageInfo交给页面就行
+        //封装了详细的分页信息，包括我们查询出来的结果，传入连续显示的页数
+        PageInfo pageInfo = new PageInfo(employeeList, 5);
+        return Msg.success().add("pageInfo", pageInfo);
+
     }
 
 }

@@ -43,7 +43,6 @@
             <br>
         </div>
 
-
         <%--显示表格数据--%>
         <div class="row">
             <div class="col-md-12">
@@ -83,6 +82,7 @@
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
                         <li><a href="${APP_PATH}/emps?pn=1">首页</a></li>
+
                         <c:if test="${pageInfo.hasPreviousPage }">
                             <li>
                                 <a href="${APP_PATH}/emps?pn=${pageInfo.pageNum-1 }" aria-label="Previous">
@@ -90,6 +90,7 @@
                                 </a>
                             </li>
                         </c:if>
+
                         <c:forEach items="${pageInfo.navigatepageNums}" var="page_Num">
                             <c:if test="${page_Num == pageInfo.pageNum}">
                                 <li class="active"><a href="#">${page_Num}</a></li>
