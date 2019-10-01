@@ -95,7 +95,7 @@
             })
         }
 
-        /*显示员工详细信息*/
+        /*//显示员工详细信息*/
         function buildEmpsTable(result) {
             $("#emps_table tbody").empty();
             var emps = result.extend.pageInfo.list;
