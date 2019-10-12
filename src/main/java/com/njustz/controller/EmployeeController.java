@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,6 +25,15 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+
+    //保存员工信息到服务器
+    @RequestMapping(value = "/emp", method = RequestMethod.POST)
+
+    public @ResponseBody Msg saveEmp(Employee employee){
+        employeeService.saveEmp(employee);
+        return Msg.success();
+    }
 
     //查询员工数据，分页查询
     @RequestMapping("/emps")
@@ -42,6 +52,7 @@ public class EmployeeController {
 
         return "list";
     }
+
 
     @RequestMapping("/emp_lists")
     @ResponseBody

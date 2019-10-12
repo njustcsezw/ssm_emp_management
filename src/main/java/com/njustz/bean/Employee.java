@@ -4,11 +4,9 @@ public class Employee {
    
     private Integer empId;
     private String empName; 
-    private String empGender;  
-    //
+    private String empGender;
     private String email;  
-    private Integer deptId;  
-    //
+    private Integer deptId;
     private Department department;
 
     public Employee() {

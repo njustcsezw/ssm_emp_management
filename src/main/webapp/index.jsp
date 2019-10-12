@@ -24,6 +24,62 @@
 
 <body>
 
+
+    <!-- Modal添加员工信息 -->
+    <div class="modal fade" id="emp_add_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Add Employee</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="empName_add_input" class="col-sm-2 control-label">empName</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="empName" class="form-control" id="empName_add_input" placeholder="empName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="empEmail_add_input" class="col-sm-2 control-label">email</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="email" class="form-control" id="empEmail_add_input" placeholder="email@gmail.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">gender</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="empGender" id="gender1_add_input" value="M" checked="checked">男
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="empGender" id="gender2_add_input" value="F">女
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">deptName</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" name="deptId" id="dept_add_select"></select>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="emp_save_btn">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <%--显示详细信息界面--%>
     <div class="container">
 
         <%--标题--%>
@@ -36,7 +92,7 @@
         <%--按钮--%>
         <div class="row">
             <div class="col-md-4 col-md-offset-8">
-                <button class="btn btn-primary">新增</button>
+                <button class="btn btn-primary" id="emp_add_modal_btn">新增</button>
                 <button class="btn btn-danger">删除</button>
             </div>
             <br>
@@ -101,7 +157,7 @@
             var emps = result.extend.pageInfo.list;
 
             $.each(emps, function (index, item) {
-                //alert(item.emp  Name);
+                //alert(item.empName);
                 var empIdTd = $("<td></td>").append(item.empId);
                 var empNameTd = $("<td></td>").append(item.empName);
                 var empGenderTd = $("<td></td>").append(item.empGender=='M'?'男':'女');
@@ -132,7 +188,6 @@
             nav.appendTo("#page_info_area");
             //$("#page_info_area").append("当前"+page.pageNum + "页,总" + page.pages + "页,总" + page.total + "条记录");
         }
-
 
         //创建分页导航栏
         function buildPageNav(result) {
@@ -188,6 +243,53 @@
             nav.append(ul);
             nav.appendTo("#page_nav_area");
         }
+
+        /*点击添加按钮弹出模态框*/
+        $("#emp_add_modal_btn").click(function () {
+            //发送Ajax请求，显示部门下拉列表
+            getDepts();
+
+            /*弹出模态框*/
+            $("#emp_add_modal").modal({
+                backdrop:false
+            })
+
+        })
+
+        /*查出所有部门详细信息*/
+        function getDepts() {
+            $("#dept_add_select").empty();
+            $.ajax({
+                url:"${APP_PATH}/depts",
+                type:"GET",
+                success:function (result) {
+                    //console.log(result);
+                    $.each(result.extend.depts, function () {
+                        var optionEle = $("<option></option>").append(this.deptName).attr("value", this.deptId);
+                        optionEle.appendTo("#dept_add_select");
+                    })
+                    //$("#dept_add_select")
+                }
+            })
+        }
+
+        /*保存员工信息emp_save_btn*/
+        $("#emp_save_btn").click(function () {
+            //将模态框中信息提交给服务器并保存
+            //序列化展示 alert($("#emp_add_modal form").serialize());
+            $.ajax({
+                url:"${APP_PATH}/emp",
+                data:$("#emp_add_modal form").serialize(),
+                type:"POST",
+                success:function (result) {
+                    alert(result.msg);
+                    //1.close modal
+                    $("#emp_add_modal").modal('hide');
+                    //2.jump to last page and display
+                    toPage(9999);
+                }
+            })
+        })
 
     </script>
 
