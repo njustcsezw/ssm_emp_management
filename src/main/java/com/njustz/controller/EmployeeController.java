@@ -29,7 +29,6 @@ public class EmployeeController {
 
     //保存员工信息到服务器
     @RequestMapping(value = "/emp", method = RequestMethod.POST)
-
     public @ResponseBody Msg saveEmp(Employee employee){
         employeeService.saveEmp(employee);
         return Msg.success();

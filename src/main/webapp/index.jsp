@@ -41,12 +41,14 @@
                             <label for="empName_add_input" class="col-sm-2 control-label">empName</label>
                             <div class="col-sm-10">
                                 <input type="text" name="empName" class="form-control" id="empName_add_input" placeholder="empName">
+                                <span class="help-block" id="empName_add_span"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="empEmail_add_input" class="col-sm-2 control-label">email</label>
                             <div class="col-sm-10">
                                 <input type="text" name="email" class="form-control" id="empEmail_add_input" placeholder="email@gmail.com">
+                                <span class="help-block" id="empEmail_add_span"></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -186,7 +188,6 @@
             ul.append(li);
             nav.append(ul);
             nav.appendTo("#page_info_area");
-            //$("#page_info_area").append("当前"+page.pageNum + "页,总" + page.pages + "页,总" + page.total + "条记录");
         }
 
         //创建分页导航栏
@@ -248,7 +249,6 @@
         $("#emp_add_modal_btn").click(function () {
             //发送Ajax请求，显示部门下拉列表
             getDepts();
-
             /*弹出模态框*/
             $("#emp_add_modal").modal({
                 backdrop:false
@@ -273,8 +273,42 @@
             })
         }
 
+        /*对提交给服务器的表单数据进行校验，姓名与邮箱*/
+        function validateAddForm(){
+            var empName =  $("#empName_add_input").val();
+            var regName = /(^[a-zA-Z0-9_-]{3,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
+            if(!regName.test(empName)){
+                //alert("The user's name must contain 3-16 letters or 2-5 Chinese characters at least~");
+                $("#empName_add_input").parent().addClass("has-error");
+                $("#empName_add_span").append("The user's name must contain 3-16 letters or 2-5 Chinese characters at least~");
+                return false;
+            }else {
+                $("#empName_add_input").parent().addClass("has-success");
+            }
+
+            //alert(regName.test(empName));
+
+            var empEmail = $("#empEmail_add_input").val();
+            var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+            if(!regEmail.test(empEmail)){
+                //alert("The user's email is illegal ~");
+                $("#empEmail_add_input").parent().addClass("has-error");
+                $("#empEmail_add_span").text("The user's email is illegal ~");
+                return false;
+            }else {
+                $("#empEmail_add_input").parent().addClass("has-success");
+            }
+            return true;
+        }
+
         /*保存员工信息emp_save_btn*/
         $("#emp_save_btn").click(function () {
+
+            //先进行校验
+            if(!validateAddForm()){
+                return false;
+            }
+
             //将模态框中信息提交给服务器并保存
             //序列化展示 alert($("#emp_add_modal form").serialize());
             $.ajax({
