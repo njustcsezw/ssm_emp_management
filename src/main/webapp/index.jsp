@@ -247,6 +247,10 @@
 
         /*点击添加按钮弹出模态框*/
         $("#emp_add_modal_btn").click(function () {
+            //表单重置
+            $("#emp_add_modal form")[0].reset();
+            showValidateMsg("#empName_add_input", "", null);
+            showValidateMsg("#empEmail_add_input", "", null);
             //发送Ajax请求，显示部门下拉列表
             getDepts();
             /*弹出模态框*/
@@ -279,33 +283,69 @@
             var regName = /(^[a-zA-Z0-9_-]{3,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
             if(!regName.test(empName)){
                 //alert("The user's name must contain 3-16 letters or 2-5 Chinese characters at least~");
-                $("#empName_add_input").parent().addClass("has-error");
-                $("#empName_add_span").append("The user's name must contain 3-16 letters or 2-5 Chinese characters at least~");
+                showValidateMsg("#empName_add_input", "error", "The user's name must contain 3-16 letters or 2-5 Chinese characters at least~");
                 return false;
             }else {
-                $("#empName_add_input").parent().addClass("has-success");
+                showValidateMsg("#empName_add_input", "success", "");
             }
 
             //alert(regName.test(empName));
-
             var empEmail = $("#empEmail_add_input").val();
             var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
             if(!regEmail.test(empEmail)){
                 //alert("The user's email is illegal ~");
-                $("#empEmail_add_input").parent().addClass("has-error");
-                $("#empEmail_add_span").text("The user's email is illegal ~");
+                showValidateMsg("#empEmail_add_input", "error", "The user's email is illegal ~");
                 return false;
             }else {
-                $("#empEmail_add_input").parent().addClass("has-success");
+                showValidateMsg("#empEmail_add_input", "success", "");
             }
             return true;
         }
+
+        function showValidateMsg(ele, status, msg){
+            $(ele).parent().removeClass("has-error has-success");
+            $(ele).next("span").text("");
+            if("success" == status){
+                $(ele).parent().addClass("has-success");
+                $(ele).next("span").text(msg);
+            }
+            if("error" == status){
+                $(ele).parent().addClass("has-error");
+                $(ele).next("span").text(msg);
+            }
+
+        }
+
+        /*校验员工名是否合法*/
+        $("#empName_add_input").change(function () {
+            var empName = this.value;
+            $.ajax({
+                url:"${APP_PATH}/checkName",
+                data:"empName="+empName,
+                type:"GET",
+                success:function (result) {
+                    if(result.code == 100){
+                        showValidateMsg("#empName_add_input", "success", "The user's name is OK~");
+                        $("#emp_save_btn").attr("ajax-va", "success");
+                    }else {
+                        showValidateMsg("#empName_add_input", "error", "The user's name is repeated~");
+                        $("#emp_save_btn").attr("ajax-va", "error");
+                    }
+                }
+            })
+        })
 
         /*保存员工信息emp_save_btn*/
         $("#emp_save_btn").click(function () {
 
             //先进行校验
+            //校验输入是否合法
             if(!validateAddForm()){
+                return false;
+            }
+            //校验用户名是否重复
+            if($(this).attr("ajax-va") == "error"){
+                showValidateMsg("#empName_add_input", "error", "The user's name is repeated~");
                 return false;
             }
 
