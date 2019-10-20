@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Msg {
 
-	//状态码 success100, fail-100;
+	//状态码 success 100, fail -100;
 	private int code;
 	//提示信息
 	private String msg;

@@ -245,12 +245,19 @@
             nav.appendTo("#page_nav_area");
         }
 
+        function resetForm(ele){
+            $(ele)[0].reset();
+            $(ele).find("*").removeClass("has-error has-success");
+            $(ele).find(".help-block").text("");
+        }
+
         /*点击添加按钮弹出模态框*/
         $("#emp_add_modal_btn").click(function () {
-            //表单重置
-            $("#emp_add_modal form")[0].reset();
+            //表单重置,包括数据及样式
+            resetForm("#emp_add_modal form");
+           /* $("#emp_add_modal form")[0].reset();
             showValidateMsg("#empName_add_input", "", null);
-            showValidateMsg("#empEmail_add_input", "", null);
+            showValidateMsg("#empEmail_add_input", "", null);*/
             //发送Ajax请求，显示部门下拉列表
             getDepts();
             /*弹出模态框*/
@@ -328,7 +335,7 @@
                         showValidateMsg("#empName_add_input", "success", "The user's name is OK~");
                         $("#emp_save_btn").attr("ajax-va", "success");
                     }else {
-                        showValidateMsg("#empName_add_input", "error", "The user's name is repeated~");
+                        showValidateMsg("#empName_add_input", "error", result.extend.va_name);
                         $("#emp_save_btn").attr("ajax-va", "error");
                     }
                 }

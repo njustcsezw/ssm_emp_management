@@ -29,11 +29,16 @@ public class EmployeeController {
     @RequestMapping("/checkName")
     @ResponseBody
     public Msg checkEmpName(@RequestParam("empName") String name){
+        //先判断用户名是否是合法的表达式
+        String regName = "(^[a-zA-Z0-9_-]{3,16}$)|(^[\\u2E80-\\u9FFF]{2,5})";
+        if(!name.matches(regName)){
+            return Msg.fail().add("va_name","(back)The user's name must contain 3-16 letters or 2-5 Chinese characters at least~");
+        }
         boolean res = employeeService.checkUserName(name);
         if(res){
             return Msg.success();
         }else{
-            return Msg.fail();
+            return Msg.fail().add("va_name", "(back)The user's name is repeated~");
         }
     }
 
