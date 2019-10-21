@@ -8,11 +8,13 @@ import com.njustz.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -44,9 +46,13 @@ public class EmployeeController {
 
     //保存员工信息到服务器
     @RequestMapping(value = "/emp", method = RequestMethod.POST)
-    public @ResponseBody Msg saveEmp(Employee employee){
-        employeeService.saveEmp(employee);
-        return Msg.success();
+    public @ResponseBody Msg saveEmp(@Valid Employee employee, BindingResult result){
+        if(result.hasErrors()){
+            return Msg.fail();
+        }else {
+            employeeService.saveEmp(employee);
+            return Msg.success();
+        }
     }
 
     //查询员工数据，分页查询
