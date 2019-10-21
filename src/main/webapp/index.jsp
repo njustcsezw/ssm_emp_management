@@ -81,6 +81,62 @@
         </div>
     </div>
 
+    <!-- Modal修改员工信息 -->
+    <div class="modal fade" id="emp_update_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="EmpUpdateModal">Update Employee</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="empName_update_input" class="col-sm-2 control-label">empName</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="empName" class="form-control" id="empName_update_input" placeholder="empName">
+                                <span class="help-block" id="empName_update_span"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="empEmail_update_input" class="col-sm-2 control-label">email</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="email" class="form-control" id="empEmail_update_input" placeholder="email@gmail.com">
+                                <span class="help-block" id="empEmail_update_span"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">gender</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="empGender" id="gender1_update_input" value="M" checked="checked">男
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="empGender" id="gender2_update_input" value="F">女
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">deptName</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" name="deptId" id="dept_update_select"></select>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="emp_update_btn">Update</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <%--显示详细信息界面--%>
     <div class="container">
 
@@ -165,9 +221,9 @@
                 var empGenderTd = $("<td></td>").append(item.empGender=='M'?'男':'女');
                 var empEmailTd = $("<td></td>").append(item.email);
                 var empDeptNameTd = $("<td></td>").append(item.department.deptName);
-                var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm")
+                var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
                     .append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
-                var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm")
+                var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
                     .append($("<span></span>").addClass("glyphicon glyphicon-remove")).append("删除");
                 var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
                 $("<tr></tr>").append(empIdTd).append(empNameTd).append(empGenderTd)
@@ -284,6 +340,22 @@
             })
         }
 
+        function getDeptsOfUpdate() {
+            $("#dept_update_select").empty();
+            $.ajax({
+                url:"${APP_PATH}/depts",
+                type:"GET",
+                success:function (result) {
+                    //console.log(result);
+                    $.each(result.extend.depts, function () {
+                        var optionEle = $("<option></option>").append(this.deptName).attr("value", this.deptId);
+                        optionEle.appendTo("#dept_update_select");
+                    })
+                    //$("#dept_add_select")
+                }
+            })
+        }
+
         /*对提交给服务器的表单数据进行校验，姓名与邮箱*/
         function validateAddForm(){
             var empName =  $("#empName_add_input").val();
@@ -363,13 +435,41 @@
                 data:$("#emp_add_modal form").serialize(),
                 type:"POST",
                 success:function (result) {
-                    alert(result.msg);
-                    //1.close modal
-                    $("#emp_add_modal").modal('hide');
-                    //2.jump to last page and display
-                    toPage(9999);
+                    //alert(result.msg);
+                    if(result.code==100){
+                        //alert(result.msg);
+                        //1.close modal
+                        $("#emp_add_modal").modal('hide');
+                        //2.jump to last page and display
+                        toPage(9999);
+                    }else{
+                        //显示失败信息
+                        console.log(result);
+                        if(undefined!=result.extend.errorFields.email){
+                            //显示邮箱错误信息
+                            showValidateMsg("#empEmail_add_input","error",result.extend.errorFields.email);
+                        }
+                        if(undefined!=result.extend.errorFields.empName){
+                            //显示用户名错误信息
+                            showValidateMsg("#empName_add_input","error",result.extend.errorFields.empName);
+                        }
+                    }
+
                 }
             })
+        })
+
+        $(document).on("click", ".edit_btn", function () {
+            //alert("edit");
+            //1.show msg of emp
+
+            //2.show msg of department
+            getDeptsOfUpdate();
+
+            $("#emp_update_modal").modal({
+                backdrop:false
+            })
+
         })
 
     </script>

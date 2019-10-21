@@ -9,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author njustz
@@ -47,8 +50,15 @@ public class EmployeeController {
     //保存员工信息到服务器
     @RequestMapping(value = "/emp", method = RequestMethod.POST)
     public @ResponseBody Msg saveEmp(@Valid Employee employee, BindingResult result){
-        if(result.hasErrors()){
-            return Msg.fail();
+        if(result.hasErrors()) {
+            List <FieldError> errors=result.getFieldErrors();
+            Map<String ,Object> map=new HashMap<String, Object>();
+            for(FieldError fieldError:errors) {
+                System.out.println("错误的字段名:"+fieldError.getField());
+                System.out.println("错误的信息:"+fieldError.getDefaultMessage());
+                map.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
+            return Msg.fail().add("errorFields", map);	//校验失败
         }else {
             employeeService.saveEmp(employee);
             return Msg.success();
