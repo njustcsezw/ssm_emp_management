@@ -392,7 +392,6 @@
                 $(ele).parent().addClass("has-error");
                 $(ele).next("span").text(msg);
             }
-
         }
 
         /*校验员工名是否合法*/
@@ -454,7 +453,6 @@
                             showValidateMsg("#empName_add_input","error",result.extend.errorFields.empName);
                         }
                     }
-
                 }
             })
         })
@@ -471,7 +469,6 @@
             })
 
         })
-
     </script>
 
 </body>
