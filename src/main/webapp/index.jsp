@@ -94,10 +94,10 @@
                 <div class="modal-body">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label for="empName_update_input" class="col-sm-2 control-label">empName</label>
+                            <label for="empName_update_static" class="col-sm-2 control-label">empName</label>
                             <div class="col-sm-10">
-                                <input type="text" name="empName" class="form-control" id="empName_update_input" placeholder="empName">
-                                <span class="help-block" id="empName_update_span"></span>
+                                <p class="form-control-static" id="empName_update_static"></p>
+                                <span class="help-block" ></span>
                             </div>
                         </div>
                         <div class="form-group">
@@ -119,7 +119,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label  class="col-sm-2 control-label">deptName</label>
+                            <label  class="col-sm-2 control-label" for="dept_update_select">deptName</label>
                             <div class="col-sm-4">
                                 <select class="form-control" name="deptId" id="dept_update_select"></select>
                             </div>
@@ -223,6 +223,8 @@
                 var empDeptNameTd = $("<td></td>").append(item.department.deptName);
                 var editBtn = $("<button></button>").addClass("btn btn-primary btn-sm edit_btn")
                     .append($("<span></span>").addClass("glyphicon glyphicon-pencil")).append("编辑");
+                //为编辑按钮添加一个自定义的属性，来表示当前员工的id
+                editBtn.attr("edit-id", item.empId);
                 var delBtn = $("<button></button>").addClass("btn btn-danger btn-sm delete_btn")
                     .append($("<span></span>").addClass("glyphicon glyphicon-remove")).append("删除");
                 var btnTd = $("<td></td>").append(editBtn).append(" ").append(delBtn);
@@ -460,15 +462,60 @@
         $(document).on("click", ".edit_btn", function () {
             //alert("edit");
             //1.show msg of emp
-
-            //2.show msg of department
             getDeptsOfUpdate();
+            //2.show msg of department
+            getEmp($(this).attr("edit-id"));
+
+            //3.pass emp's id to update btn
+            $("#emp_update_btn").attr("edit-id", $(this).attr("edit-id"));
 
             $("#emp_update_modal").modal({
-                backdrop:false
+                backdrop:"static"
             })
 
         })
+
+        function getEmp(id) {
+            $.ajax({
+                url:"${APP_PATH}/emp/" + id,
+                type:"GET",
+                success:function (result) {
+                    //console.log(result);
+                    var empData = result.extend.emp;
+                    $("#empName_update_static").text(empData.empName);
+                    $("#empEmail_update_input").val(empData.email);
+                    $("#emp_update_modal input[name=empGender]").val([empData.empGender]);
+                    $("#emp_update_modal select").val([empData.deptId]);
+                }
+            })
+        }
+
+        //update emp's info
+        $("#emp_update_btn").click(function () {
+            //
+            var empEmail = $("#empEmail_update_input").val();
+            var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+            if(!regEmail.test(empEmail)){
+                //alert("The user's email is illegal ~");
+                showValidateMsg("#empEmail_update_input", "error", "The user's email is illegal ~");
+                return false;
+            }else {
+                showValidateMsg("#empEmail_update_input", "success", "");
+            }
+
+            $.ajax({
+                url:"${APP_PATH}/emp/" + $(this).attr("edit-id"),
+                type:"POST",
+                data: $("#emp_update_modal form").serialize() + "&_method=PUT",
+                success:function (result) {
+                    //console.log(result);
+                    alert(result.msg);
+                }
+            })
+
+        })
+
+
     </script>
 
 </body>
