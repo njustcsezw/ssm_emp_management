@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,34 @@ public class EmployeeController {
         PageInfo pageInfo = new PageInfo(employeeList, 5);
         return Msg.success().add("pageInfo", pageInfo);
 
+    }
+
+    //delete one emp
+    /*@RequestMapping(value = "/emp/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Msg deleteEmpById(@PathVariable("id") Integer id){
+        employeeService.deleteEmp(id);
+        return Msg.success();
+    }*/
+
+    //delete emp
+    @RequestMapping(value = "/emp/{ids}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Msg deleteEmpById(@PathVariable("ids") String ids){
+        if(ids.contains("-")){
+            List<Integer> delIds = new ArrayList<>();
+            String[] str_ids = ids.split("-");
+            //组装id集合
+            for(String id : str_ids){
+                delIds.add(Integer.parseInt(id));
+            }
+            employeeService.deleteBatch(delIds);
+        }else {
+            Integer id = Integer.parseInt(ids);
+            employeeService.deleteEmp(id);
+        }
+
+        return Msg.success();
     }
 
 }
